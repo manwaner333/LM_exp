@@ -505,23 +505,13 @@ if __name__ == '__main__':
 
     model = Llama7BChatHelper(system_prompt)
 
-    # start_layer = 15
-    # end_layer = 31
-    # generate_and_save_steering_vectors(model, dataset, start_layer=start_layer, end_layer=end_layer)
-    # plot_all_activations(list(range(start_layer, end_layer + 1)))
 
-    layer = 10
-    multiplier = -3
-    max_new_tokens = 30
-    model.set_save_internal_decodings(False)
+
+    max_new_tokens = 200
     model_input = "Do you like eating cereal?"
-
-    model.reset_all()
-    vec = get_vec(layer)
-    model.set_add_activations(layer, multiplier * vec.cuda())
     text = model.generate_text(model_input, max_new_tokens=max_new_tokens)
     text = text.split("[/INST]")[-1].strip()
-    print(f"layer {layer} | multiplier {multiplier} | {text}")
+    print(text)
 
 
 
