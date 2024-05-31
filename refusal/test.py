@@ -195,12 +195,21 @@ class Llama7BChatHelper:
         for layer in self.model.model.layers:
             layer.after_position = pos
 
+    # def prompt_to_tokens(self, instruction):
+    #     B_INST, E_INST = "[INST]", "[/INST]"
+    #     B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
+    #     dialog_content = B_SYS + self.system_prompt + E_SYS + instruction.strip()
+    #     dialog_tokens = self.tokenizer.encode(
+    #         f"{B_INST} {dialog_content.strip()} {E_INST}"
+    #     )
+    #     return torch.tensor(dialog_tokens).unsqueeze(0)
+
     def prompt_to_tokens(self, instruction):
         B_INST, E_INST = "[INST]", "[/INST]"
         B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
-        dialog_content = B_SYS + self.system_prompt + E_SYS + instruction.strip()
+        dialog_content = self.system_prompt + instruction.strip()
         dialog_tokens = self.tokenizer.encode(
-            f"{B_INST} {dialog_content.strip()} {E_INST}"
+            f"{dialog_content.strip()}"
         )
         return torch.tensor(dialog_tokens).unsqueeze(0)
 
