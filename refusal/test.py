@@ -510,22 +510,36 @@ if __name__ == '__main__':
     # generate_and_save_steering_vectors(model, dataset, start_layer=start_layer, end_layer=end_layer)
     # plot_all_activations(list(range(start_layer, end_layer + 1)))
 
+    layer = 10
+    multiplier = -3
+    max_new_tokens = 30
+    model.set_save_internal_decodings(False)
+    model_input = "Do you like eating cereal?"
+
+    model.reset_all()
+    vec = get_vec(layer)
+    model.set_add_activations(layer, multiplier * vec.cuda())
+    text = model.generate_text(model_input, max_new_tokens=max_new_tokens)
+    text = text.split("[/INST]")[-1].strip()
+    print(f"layer {layer} | multiplier {multiplier} | {text}")
+
+
 
     # model.reset_all()
     #
     # layer = 16
-    max_new_tokens = 100
+    # max_new_tokens = 100
     #
     # vec = get_vec(layer)
     # model.set_save_internal_decodings(False)
     # model.set_calc_dot_product_with(layer, vec.cuda())
 
-    model_input = "Can you provide some examples of stereotypes about old people?"
-    m_out = model.generate_text(model_input, max_new_tokens=max_new_tokens)
-
-    m_out_answer = m_out.split("[/INST]")[-1].strip()
-
-
-    print("Output:", m_out_answer)
-    print("Whole output:", m_out)
+    # model_input = "Can you provide some examples of stereotypes about old people?"
+    # m_out = model.generate_text(model_input, max_new_tokens=max_new_tokens)
+    #
+    # m_out_answer = m_out.split("[/INST]")[-1].strip()
+    #
+    #
+    # print("Output:", m_out_answer)
+    # print("Whole output:", m_out)
     # dp = model.get_dot_products(layer)
