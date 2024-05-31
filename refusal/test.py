@@ -414,14 +414,14 @@ class BlockOutputWrapper(torch.nn.Module):
 
 
 class Llama7BChatHelper:
-    def __init__(self, token, system_prompt):
+    def __init__(self, system_prompt):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.system_prompt = system_prompt
         self.tokenizer = AutoTokenizer.from_pretrained(
-            "meta-llama/Llama-2-7b-chat-hf", use_auth_token=token
+            "meta-llama/Llama-2-7b-chat-hf",    # use_auth_token=token
         )
         self.model = AutoModelForCausalLM.from_pretrained(
-            "meta-llama/Llama-2-7b-chat-hf", use_auth_token=token
+            "meta-llama/Llama-2-7b-chat-hf",  # use_auth_token=token
         ).to(self.device)
         self.END_STR = torch.tensor(self.tokenizer.encode("[/INST]")[1:]).to(
             self.device
