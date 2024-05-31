@@ -420,11 +420,11 @@ def generate_and_save_steering_vectors(
         positive = torch.stack(positive_activations[layer])
         negative = torch.stack(negative_activations[layer])
         vec = (positive - negative).mean(dim=0)
-        torch.save(vec, f"vec_layer_{layer}.pt")
-        torch.save(positive, f"positive_layer_{layer}.pt")
+        torch.save(vec, f"vectors/vec_layer_{layer}.pt")
+        torch.save(positive, f"vectors/positive_layer_{layer}.pt")
         torch.save(
             negative,
-            f"negative_layer_{layer}.pt",
+            f"vectors/negative_layer_{layer}.pt",
         )
 
 
