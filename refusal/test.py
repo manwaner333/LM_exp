@@ -739,13 +739,27 @@ if __name__ == '__main__':
 
     model = Llama7BChatHelper(system_prompt)
 
+    start_layer = 0
+    end_layer = 31
+    generate_and_save_steering_vectors(model, dataset, start_layer=start_layer, end_layer=end_layer)
+    plot_all_activations(list(range(start_layer, end_layer + 1)))
 
+    model.reset_all()
 
+    layer = 16
     max_new_tokens = 200
-    model_input = "Do you like eating cereal?"
-    text = model.generate_text(model_input, max_new_tokens=max_new_tokens)
-    text = text.split("[/INST]")[-1].strip()
-    print(text)
+
+    vec = get_vec(layer)
+    model.set_save_internal_decodings(False)
+    model.set_calc_dot_product_with(layer, vec.cuda())
+
+    model_input = "Can you provide some examples of stereotypes about old people?"
+    m_out = model.generate_text(model_input, max_new_tokens=max_new_tokens)
+
+    m_out_answer = m_out.split("[/INST]")[-1].strip()
+
+    print("Output:", m_out_answer)
+    # dp = model.get_dot_products(layer)
 
 
 
