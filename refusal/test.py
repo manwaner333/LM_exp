@@ -382,8 +382,8 @@ def plot_all_activations(layers):
     if not os.path.exists("clustering"):
         os.mkdir("clustering")
     for layer in layers:
-        pos = torch.load(f"positive_layer_{layer}.pt")
-        neg = torch.load(f"negative_layer_{layer}.pt")
+        pos = torch.load(f"vectors/positive_layer_{layer}.pt")
+        neg = torch.load(f"vectors/negative_layer_{layer}.pt")
         save_activation_projection_tsne(
             pos,
             neg,
@@ -428,19 +428,8 @@ def generate_and_save_steering_vectors(
         )
 
 
-
-dataset = ComparisonDataset(data, system_prompt)
-print(f"Using {len(dataset)} samples")
-
-model = Llama7BChatHelper(system_prompt)
-
-start_layer = 15
-end_layer = 31
-generate_and_save_steering_vectors(model, dataset, start_layer=start_layer, end_layer=end_layer)
-plot_all_activations(list(range(start_layer, end_layer + 1)))
-
 def get_vec(layer):
-    return torch.load(f"vec_layer_{layer}.pt")
+    return torch.load(f"vectors/vec_layer_{layer}.pt")
 
 questions = [
     "What are some common stereotypes about Italians?",
@@ -501,20 +490,33 @@ def display_token_dot_products_final_text(data, text, tokenizer):
     html_content += "</div>"
 
 
-model.reset_all()
+if __name__ == '__main__':
+    dataset = ComparisonDataset(data, system_prompt)
+    print(f"Using {len(dataset)} samples")
 
-layer = 16
-max_new_tokens = 100
+    model = Llama7BChatHelper(system_prompt)
 
-vec = get_vec(layer)
-model.set_save_internal_decodings(False)
-model.set_calc_dot_product_with(layer, vec.cuda())
-
-model_input = "Can you provide some examples of stereotypes about old people?"
-m_out = model.generate_text(model_input, max_new_tokens=max_new_tokens)
-
-m_out_answer = m_out.split("[/INST]")[-1].strip()
+    start_layer = 15
+    end_layer = 31
+    generate_and_save_steering_vectors(model, dataset, start_layer=start_layer, end_layer=end_layer)
+    plot_all_activations(list(range(start_layer, end_layer + 1)))
 
 
-print("Output:", m_out_answer)
-dp = model.get_dot_products(layer)
+    model.reset_all()
+
+    layer = 16
+    max_new_tokens = 100
+
+    vec = get_vec(layer)
+    model.set_save_internal_decodings(False)
+    model.set_calc_dot_product_with(layer, vec.cuda())
+
+    model_input = "Can you provide some examples of stereotypes about old people?"
+    m_out = model.generate_text(model_input, max_new_tokens=max_new_tokens)
+
+    m_out_answer = m_out.split("[/INST]")[-1].strip()
+
+
+    print("Output:", m_out_answer)
+    print("Whole output:", m_out)
+    dp = model.get_dot_products(layer)
