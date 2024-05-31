@@ -1,7 +1,7 @@
 import json
 import torch
 from torch.utils.data import Dataset
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig
 from tqdm import tqdm
 import os
 from matplotlib import pyplot as plt
@@ -169,11 +169,15 @@ class Llama7BChatHelper:
     def __init__(self, system_prompt):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.system_prompt = system_prompt
+        config = AutoConfig.from_pretrained("huggyllama/llama-7b", trust_remote_code=True)
         self.tokenizer = AutoTokenizer.from_pretrained(
-            "huggyllama/llama-7b"    # , use_auth_token=token
+            "huggyllama/llama-7b",    # , use_auth_token=token
+            trust_remote_code=True
         )
         self.model = AutoModelForCausalLM.from_pretrained(
-            "huggyllama/llama-7b"    # , use_auth_token=token
+            "huggyllama/llama-7b",    # , use_auth_token=token
+            trust_remote_code=True,
+            low_cpu_mem_usage=True, config=config
         ).to(self.device)
         self.END_STR = torch.tensor(self.tokenizer.encode("[/INST]")[1:]).to(
             self.device
