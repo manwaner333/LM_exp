@@ -11,7 +11,7 @@ from sklearn.manifold import TSNE
 import matplotlib
 # token = input("Enter HF token: ")
 system_prompt = "You are a helpful, honest and concise assistant."
-data_path = "datasets/refusal/refusal_data_A_B_1.json"
+data_path = "datasets/refusal/refusal_data_A_B.json"
 
 data = []
 with open(data_path, "r") as f:
@@ -496,20 +496,20 @@ if __name__ == '__main__':
 
     model = Llama7BChatHelper(system_prompt)
 
-    start_layer = 15
-    end_layer = 31
-    generate_and_save_steering_vectors(model, dataset, start_layer=start_layer, end_layer=end_layer)
-    plot_all_activations(list(range(start_layer, end_layer + 1)))
+    # start_layer = 15
+    # end_layer = 31
+    # generate_and_save_steering_vectors(model, dataset, start_layer=start_layer, end_layer=end_layer)
+    # plot_all_activations(list(range(start_layer, end_layer + 1)))
 
 
-    model.reset_all()
-
-    layer = 16
+    # model.reset_all()
+    #
+    # layer = 16
     max_new_tokens = 100
-
-    vec = get_vec(layer)
-    model.set_save_internal_decodings(False)
-    model.set_calc_dot_product_with(layer, vec.cuda())
+    #
+    # vec = get_vec(layer)
+    # model.set_save_internal_decodings(False)
+    # model.set_calc_dot_product_with(layer, vec.cuda())
 
     model_input = "Can you provide some examples of stereotypes about old people?"
     m_out = model.generate_text(model_input, max_new_tokens=max_new_tokens)
@@ -519,4 +519,4 @@ if __name__ == '__main__':
 
     print("Output:", m_out_answer)
     print("Whole output:", m_out)
-    dp = model.get_dot_products(layer)
+    # dp = model.get_dot_products(layer)
