@@ -613,10 +613,13 @@ if __name__ == '__main__':
     # prompt = system_prompt + "Q: {}".format(model_input)
 
 
-    B_INST, E_INST = "[INST]", "[/INST]"
-    B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
-    dialog_content = B_SYS + system_prompt + E_SYS + model_input.strip()
-    prompt = f"{B_INST} {dialog_content.strip()} {E_INST}"
+    # B_INST, E_INST = "[INST]", "[/INST]"
+    # B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
+    # dialog_content = B_SYS + system_prompt + E_SYS + model_input.strip()
+    # prompt = f"{B_INST} {dialog_content.strip()} {E_INST}"
+
+
+    prompt = system_prompt  +  "Q: {}".format(model_input) + "[/INST]"
 
 
     # model.tokenizer.pad_token = model.tokenizer.eos_token
