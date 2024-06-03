@@ -596,7 +596,7 @@ if __name__ == '__main__':
     # 1
     layer = 10
     multiplier = -3
-    max_new_tokens = 30
+    max_new_tokens = 100
     # model.set_save_internal_decodings(False)
     model_input = "Do you like eating cereal?"
 
@@ -611,9 +611,9 @@ if __name__ == '__main__':
     model.tokenizer.pad_token = model.tokenizer.eos_token
     encoded_input = model.tokenizer(prompt, return_tensors='pt', padding=True, truncation=True).to(model.device)
     input_ids = encoded_input['input_ids']
-    model_outputs = model.generate(
-        input_ids, max_new_tokens=max_new_tokens, top_k=1
-    )
+    model_outputs = model.model.generate(
+        input_ids, max_new_tokens=max_new_tokens, repetition_penalty=1.2, temperature=0.7,
+        top_k=50, top_p=0.9)
     out = model.tokenizer.batch_decode(model_outputs)[0]
     print(out)
 
