@@ -332,7 +332,7 @@ class Llama7BChatHelper:
         generated = self.model.generate(
             inputs=tokens,
             max_new_tokens=max_new_tokens,
-            repetition_penalty=1.0, temperature=0.5, top_k=30, top_p=0.85, do_sample=True
+            repetition_penalty=1.2, temperature=0.7, top_k=30, top_p=0.9, do_sample=True
             # inputs=tokens, max_new_tokens=max_new_tokens, top_k=1
         )
         return self.tokenizer.batch_decode(generated)[0]
