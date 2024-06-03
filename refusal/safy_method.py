@@ -610,12 +610,20 @@ if __name__ == '__main__':
     # text = text.split("[/INST]")[-1].strip()
     # print(f"layer {layer} | multiplier {multiplier} | {text}")
 
-    prompt = system_prompt + "Q: {}".format(model_input)
+    # prompt = system_prompt + "Q: {}".format(model_input)
+
+
+    B_INST, E_INST = "[INST]", "[/INST]"
+    B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
+    dialog_content = B_SYS + system_prompt + E_SYS + model_input.strip()
+    prompt = f"{B_INST} {dialog_content.strip()} {E_INST}"
+
+
     # model.tokenizer.pad_token = model.tokenizer.eos_token
     # encoded_input = model.tokenizer(prompt, return_tensors='pt', padding=True, truncation=True).to(model.device)
     # input_ids = encoded_input['input_ids']
     encoded_input = model.tokenizer.encode(prompt)
-    input_ids = torch.tensor(encoded_input).unsqueeze(0)
+    input_ids = torch.tensor(encoded_input).unsqueeze(0).to(model.device)
     model_outputs = model.model.generate(
         input_ids, max_new_tokens=max_new_tokens, repetition_penalty=1.2, temperature=0.7,
         top_k=50, top_p=0.9)
