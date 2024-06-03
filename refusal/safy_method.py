@@ -17,12 +17,21 @@ data = []
 with open(data_path, "r") as f:
     data = json.load(f)
 
+# def prompt_to_tokens(tokenizer, system_prompt, instruction, model_output):
+#     B_INST, E_INST = "[INST]", "[/INST]"
+#     B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
+#     dialog_content = B_SYS + system_prompt + E_SYS + instruction.strip()
+#     dialog_tokens = tokenizer.encode(
+#         f"{B_INST} {dialog_content.strip()} {E_INST} {model_output.strip()}"
+#     )
+#     return torch.tensor(dialog_tokens).unsqueeze(0)
+
+
 def prompt_to_tokens(tokenizer, system_prompt, instruction, model_output):
-    B_INST, E_INST = "[INST]", "[/INST]"
-    B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
-    dialog_content = B_SYS + system_prompt + E_SYS + instruction.strip()
+    E_INST = "<\s>"
+    dialog_content = system_prompt + "Q: {}".format(instruction.strip()) + E_INST + "A: {}".format(model_output.strip())
     dialog_tokens = tokenizer.encode(
-        f"{B_INST} {dialog_content.strip()} {E_INST} {model_output.strip()}"
+        dialog_content
     )
     return torch.tensor(dialog_tokens).unsqueeze(0)
 
@@ -271,7 +280,10 @@ class Llama7BChatHelper:
             "huggyllama/llama-7b", config=config  # , trust_remote_code=True, low_cpu_mem_usage=True  # use_auth_token=token
         ).to(self.device)
 
-        self.END_STR = torch.tensor(self.tokenizer.encode("[/INST]")[1:]).to(
+        # self.END_STR = torch.tensor(self.tokenizer.encode("[/INST]")[1:]).to(
+        #     self.device
+        # )
+        self.END_STR = torch.tensor(self.tokenizer.encode("</s>")[1:]).to(
             self.device
         )
         for i, layer in enumerate(self.model.model.layers):
@@ -305,8 +317,8 @@ class Llama7BChatHelper:
         #     f"{B_INST} {dialog_content.strip()} {E_INST}"
         # )
         # print(f"{B_INST} {dialog_content.strip()} {E_INST}")
-
-        prompt = self.system_prompt + "Q: {}".format(instruction)
+        E_INST = "<\s>"
+        prompt = self.system_prompt + "Q: {}".format(instruction) + E_INST
         dialog_tokens = self.tokenizer.encode(prompt)
         return torch.tensor(dialog_tokens).unsqueeze(0)
 
@@ -623,9 +635,12 @@ if __name__ == '__main__':
     # text = text.split("[/INST]")[-1].strip()
     print(f"layer {layer} | multiplier {multiplier} | {text}")
 
+
+
+
+
+
     # prompt = system_prompt + "Q: {}".format(model_input)
-
-
     # B_INST, E_INST = "[INST]", "[/INST]"
     # B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
     # dialog_content = B_SYS + system_prompt + E_SYS + model_input.strip()
