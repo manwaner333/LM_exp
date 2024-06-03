@@ -265,11 +265,12 @@ class Llama7BChatHelper:
         # ).to(self.device)
         config = AutoConfig.from_pretrained("huggyllama/llama-7b", trust_remote_code=True)
         self.tokenizer = AutoTokenizer.from_pretrained(
-            "huggyllama/llama-7b", trust_remote_code=True,  # use_auth_token=token
+            "huggyllama/llama-7b"  # , trust_remote_code=True,  # use_auth_token=token
         )
         self.model = AutoModelForCausalLM.from_pretrained(
-            "huggyllama/llama-7b", trust_remote_code=True, low_cpu_mem_usage=True, config=config  # use_auth_token=token
+            "huggyllama/llama-7b", config=config  # , trust_remote_code=True, low_cpu_mem_usage=True  # use_auth_token=token
         ).to(self.device)
+
         self.END_STR = torch.tensor(self.tokenizer.encode("[/INST]")[1:]).to(
             self.device
         )
@@ -596,14 +597,14 @@ if __name__ == '__main__':
     layer = 10
     multiplier = -3
     max_new_tokens = 30
-    model.set_save_internal_decodings(False)
+    # model.set_save_internal_decodings(False)
     model_input = "Do you like eating cereal?"
 
     # model.reset_all()
     # vec = get_vec(layer)
     # model.set_add_activations(layer, multiplier * vec.cuda())
     text = model.generate_text(model_input, max_new_tokens=max_new_tokens)
-    text = text.split("[/INST]")[-1].strip()
+    # text = text.split("[/INST]")[-1].strip()
     print(f"layer {layer} | multiplier {multiplier} | {text}")
 
 
