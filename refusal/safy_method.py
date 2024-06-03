@@ -29,7 +29,7 @@ with open(data_path, "r") as f:
 
 def prompt_to_tokens(tokenizer, system_prompt, instruction, model_output):
     E_INST = "<\s>"
-    dialog_content = system_prompt + "Q: {}".format(instruction.strip()) + E_INST + "A: {}".format(model_output.strip())
+    dialog_content = system_prompt + " Q: {}".format(instruction.strip()) + " " + E_INST + " A: {}".format(model_output.strip())
     dialog_tokens = tokenizer.encode(
         dialog_content
     )
@@ -318,7 +318,7 @@ class Llama7BChatHelper:
         # )
         # print(f"{B_INST} {dialog_content.strip()} {E_INST}")
         E_INST = "<\s>"
-        prompt = self.system_prompt + "Q: {}".format(instruction) + E_INST
+        prompt = self.system_prompt + " Q: {}".format(instruction) + " " + E_INST
         dialog_tokens = self.tokenizer.encode(prompt)
         return torch.tensor(dialog_tokens).unsqueeze(0)
 
