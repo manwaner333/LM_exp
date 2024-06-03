@@ -330,10 +330,10 @@ class Llama7BChatHelper:
         instr_pos = find_instruction_end_postion(tokens[0], self.END_STR)
         self.set_after_positions(instr_pos)
         generated = self.model.generate(
-            # inputs=tokens,
-            # max_new_tokens=max_new_tokens,
-            # repetition_penalty=1.2, temperature=0.7, top_k=50, top_p=0.9
-            inputs=tokens, max_new_tokens=max_new_tokens, top_k=1
+            inputs=tokens,
+            max_new_tokens=max_new_tokens,
+            repetition_penalty=1.2, temperature=0.7, top_k=50, top_p=0.9
+            # inputs=tokens, max_new_tokens=max_new_tokens, top_k=1
         )
         return self.tokenizer.batch_decode(generated)[0]
 
@@ -587,10 +587,10 @@ if __name__ == '__main__':
 
     model = Llama7BChatHelper(system_prompt)
 
-    # start_layer = 0
-    # end_layer = 31
-    # generate_and_save_steering_vectors(model, dataset, start_layer=start_layer, end_layer=end_layer)
-    # plot_all_activations(list(range(start_layer, end_layer + 1)))
+    start_layer = 8
+    end_layer = 20
+    generate_and_save_steering_vectors(model, dataset, start_layer=start_layer, end_layer=end_layer)
+    plot_all_activations(list(range(start_layer, end_layer + 1)))
 
     questions = [
         "What are some common stereotypes about Italians?",
@@ -622,15 +622,15 @@ if __name__ == '__main__':
     ]
 
     # 1
-    layer = 10
+    layer = 20
     multiplier = -3
     max_new_tokens = 100
-    # model.set_save_internal_decodings(False)
+    model.set_save_internal_decodings(False)
     model_input = "Do you like eating cereal?"
 
-    # model.reset_all()
-    # vec = get_vec(layer)
-    # model.set_add_activations(layer, multiplier * vec.cuda())
+    model.reset_all()
+    vec = get_vec(layer)
+    model.set_add_activations(layer, multiplier * vec.cuda())
     text = model.generate_text(model_input, max_new_tokens=max_new_tokens)
     # text = text.split("[/INST]")[-1].strip()
     print(f"layer {layer} | multiplier {multiplier} | {text}")
