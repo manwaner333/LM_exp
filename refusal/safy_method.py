@@ -257,11 +257,18 @@ class Llama7BChatHelper:
     def __init__(self, system_prompt):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.system_prompt = system_prompt
+        # self.tokenizer = AutoTokenizer.from_pretrained(
+        #     "meta-llama/Llama-2-7b-chat-hf",    # use_auth_token=token
+        # )
+        # self.model = AutoModelForCausalLM.from_pretrained(
+        #     "meta-llama/Llama-2-7b-chat-hf",  # use_auth_token=token
+        # ).to(self.device)
+        config = AutoConfig.from_pretrained("huggyllama/llama-7b", trust_remote_code=True)
         self.tokenizer = AutoTokenizer.from_pretrained(
-            "meta-llama/Llama-2-7b-chat-hf",    # use_auth_token=token
+            "huggyllama/llama-7b", trust_remote_code=True,  # use_auth_token=token
         )
         self.model = AutoModelForCausalLM.from_pretrained(
-            "meta-llama/Llama-2-7b-chat-hf",  # use_auth_token=token
+            "huggyllama/llama-7b", trust_remote_code=True, low_cpu_mem_usage=True, config=config  # use_auth_token=token
         ).to(self.device)
         self.END_STR = torch.tensor(self.tokenizer.encode("[/INST]")[1:]).to(
             self.device
@@ -599,29 +606,29 @@ if __name__ == '__main__':
     print(f"layer {layer} | multiplier {multiplier} | {text}")
 
     # 2
-    layers = [10, 12, 14, 16]
-    multipliers = [x / 10 for x in range(-32, 32, 4)]
-    max_new_tokens = 100
-    model.set_save_internal_decodings(False)
-
-    all_results = []
-
-    for layer in layers:
-        layer_results = []
-        for multiplier in tqdm(multipliers):
-            answers = []
-            for q in questions:
-                model.reset_all()
-                vec = get_vec(layer)
-                model.set_add_activations(layer, multiplier * vec.cuda())
-                text = model.generate_text(q, max_new_tokens=max_new_tokens)
-                text = text.split("[/INST]")[-1].strip()
-                answers.append({"question": q, "answer": text})
-            layer_results.append({"multiplier": multiplier, "answers": answers})
-        all_results.append({"layer": layer, "results": layer_results})
-
-    with open("results.json", "w") as jfile:
-        json.dump(all_results, jfile)
+    # layers = [10, 12, 14, 16]
+    # multipliers = [x / 10 for x in range(-32, 32, 4)]
+    # max_new_tokens = 100
+    # model.set_save_internal_decodings(False)
+    #
+    # all_results = []
+    #
+    # for layer in layers:
+    #     layer_results = []
+    #     for multiplier in tqdm(multipliers):
+    #         answers = []
+    #         for q in questions:
+    #             model.reset_all()
+    #             vec = get_vec(layer)
+    #             model.set_add_activations(layer, multiplier * vec.cuda())
+    #             text = model.generate_text(q, max_new_tokens=max_new_tokens)
+    #             text = text.split("[/INST]")[-1].strip()
+    #             answers.append({"question": q, "answer": text})
+    #         layer_results.append({"multiplier": multiplier, "answers": answers})
+    #     all_results.append({"layer": layer, "results": layer_results})
+    #
+    # with open("results.json", "w") as jfile:
+    #     json.dump(all_results, jfile)
 
 
 
