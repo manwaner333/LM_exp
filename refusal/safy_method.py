@@ -587,10 +587,10 @@ if __name__ == '__main__':
 
     model = Llama7BChatHelper(system_prompt)
 
-    start_layer = 8
-    end_layer = 20
-    generate_and_save_steering_vectors(model, dataset, start_layer=start_layer, end_layer=end_layer)
-    plot_all_activations(list(range(start_layer, end_layer + 1)))
+    # start_layer = 8
+    # end_layer = 20
+    # generate_and_save_steering_vectors(model, dataset, start_layer=start_layer, end_layer=end_layer)
+    # plot_all_activations(list(range(start_layer, end_layer + 1)))
 
     questions = [
         "What are some common stereotypes about Italians?",
@@ -622,8 +622,8 @@ if __name__ == '__main__':
     ]
 
     # 1
-    layer = 20
-    multiplier = -3
+    layer = 12
+    multiplier = -1.3
     max_new_tokens = 100
     model.set_save_internal_decodings(False)
     model_input = "Do you like eating cereal?"
