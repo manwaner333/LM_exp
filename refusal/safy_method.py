@@ -305,7 +305,10 @@ class Llama7BChatHelper:
         instr_pos = find_instruction_end_postion(tokens[0], self.END_STR)
         self.set_after_positions(instr_pos)
         generated = self.model.generate(
-            inputs=tokens, max_new_tokens=max_new_tokens, top_k=1
+            inputs=tokens,
+            max_new_tokens=max_new_tokens,
+            repetition_penalty=1.2, temperature=0.7, top_k=50, top_p=0.9
+            # inputs=tokens, max_new_tokens=max_new_tokens, top_k=1
         )
         return self.tokenizer.batch_decode(generated)[0]
 
@@ -603,19 +606,19 @@ if __name__ == '__main__':
     # model.reset_all()
     # vec = get_vec(layer)
     # model.set_add_activations(layer, multiplier * vec.cuda())
-    # text = model.generate_text(model_input, max_new_tokens=max_new_tokens)
+    text = model.generate_text(model_input, max_new_tokens=max_new_tokens)
     # text = text.split("[/INST]")[-1].strip()
-    # print(f"layer {layer} | multiplier {multiplier} | {text}")
+    print(f"layer {layer} | multiplier {multiplier} | {text}")
 
-    prompt = system_prompt + "Q: {}".format(model_input)
-    model.tokenizer.pad_token = model.tokenizer.eos_token
-    encoded_input = model.tokenizer(prompt, return_tensors='pt', padding=True, truncation=True).to(model.device)
-    input_ids = encoded_input['input_ids']
-    model_outputs = model.model.generate(
-        input_ids, max_new_tokens=max_new_tokens, repetition_penalty=1.2, temperature=0.7,
-        top_k=50, top_p=0.9)
-    out = model.tokenizer.batch_decode(model_outputs)[0]
-    print(out)
+    # prompt = system_prompt + "Q: {}".format(model_input)
+    # model.tokenizer.pad_token = model.tokenizer.eos_token
+    # encoded_input = model.tokenizer(prompt, return_tensors='pt', padding=True, truncation=True).to(model.device)
+    # input_ids = encoded_input['input_ids']
+    # model_outputs = model.model.generate(
+    #     input_ids, max_new_tokens=max_new_tokens, repetition_penalty=1.2, temperature=0.7,
+    #     top_k=50, top_p=0.9)
+    # out = model.tokenizer.batch_decode(model_outputs)[0]
+    # print(out)
 
 
 
