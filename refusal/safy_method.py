@@ -31,7 +31,7 @@ class ComparisonDataset(Dataset):
         self.data = data
         self.system_prompt = system_prompt
         self.tokenizer = AutoTokenizer.from_pretrained(
-            "meta-llama/Llama-2-7b""meta-llama/Llama-2-7b-chat-hf"      # , use_auth_token=token
+            "huggyllama/llama-7b"   # "meta-llama/Llama-2-7b-chat-hf"      # , use_auth_token=token
         )
         self.tokenizer.pad_token = self.tokenizer.eos_token
 
@@ -603,9 +603,22 @@ if __name__ == '__main__':
     # model.reset_all()
     # vec = get_vec(layer)
     # model.set_add_activations(layer, multiplier * vec.cuda())
-    text = model.generate_text(model_input, max_new_tokens=max_new_tokens)
+    # text = model.generate_text(model_input, max_new_tokens=max_new_tokens)
     # text = text.split("[/INST]")[-1].strip()
-    print(f"layer {layer} | multiplier {multiplier} | {text}")
+    # print(f"layer {layer} | multiplier {multiplier} | {text}")
+
+    prompt = system_prompt + "Q: {}".format(model_input)
+    model.tokenizer.pad_token = model.tokenizer.eos_token
+    encoded_input = model.tokenizer(prompt, return_tensors='pt', padding=True, truncation=True).to(model.device)
+    input_ids = encoded_input['input_ids']
+    model_outputs = model.generate(
+        input_ids, max_new_tokens=max_new_tokens, top_k=1
+    )
+    out = model.tokenizer.batch_decode(model_outputs)[0]
+    print(out)
+
+
+
 
 
     # 2
