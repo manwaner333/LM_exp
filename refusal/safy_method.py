@@ -330,10 +330,10 @@ class Llama7BChatHelper:
         instr_pos = find_instruction_end_postion(tokens[0], self.END_STR)
         self.set_after_positions(instr_pos)
         generated = self.model.generate(
-            inputs=tokens,
-            max_new_tokens=max_new_tokens,
-            repetition_penalty=1.2, temperature=0.7, top_k=50, top_p=0.9
-            # inputs=tokens, max_new_tokens=max_new_tokens, top_k=1
+            # inputs=tokens,
+            # max_new_tokens=max_new_tokens,
+            # repetition_penalty=1.2, temperature=0.7, top_k=50, top_p=0.9
+            inputs=tokens, max_new_tokens=max_new_tokens, top_k=1
         )
         return self.tokenizer.batch_decode(generated)[0]
 
