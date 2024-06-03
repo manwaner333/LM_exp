@@ -306,7 +306,8 @@ class Llama7BChatHelper:
         # )
         # print(f"{B_INST} {dialog_content.strip()} {E_INST}")
 
-        dialog_tokens = self.system_prompt + "Q: {}".format(instruction)
+        prompt = self.system_prompt + "Q: {}".format(instruction)
+        dialog_tokens = self.tokenizer.encode(prompt)
         return torch.tensor(dialog_tokens).unsqueeze(0)
 
     def generate_text(self, prompt, max_new_tokens=50):
