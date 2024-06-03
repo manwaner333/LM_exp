@@ -622,18 +622,34 @@ if __name__ == '__main__':
     ]
 
     # 1
-    layer = 12
-    multiplier = -1.3
-    max_new_tokens = 100
-    model.set_save_internal_decodings(False)
-    model_input = "Do you like eating cereal?"
+    # layer = 12
+    # multiplier = -1.3
+    # max_new_tokens = 100
+    # model.set_save_internal_decodings(False)
+    # model_input = "Do you like eating cereal?"
+    #
+    # model.reset_all()
+    # vec = get_vec(layer)
+    # model.set_add_activations(layer, multiplier * vec.cuda())
+    # text = model.generate_text(model_input, max_new_tokens=max_new_tokens)
+    # # text = text.split("[/INST]")[-1].strip()
+    # print(f"layer {layer} | multiplier {multiplier} | {text}")
 
     model.reset_all()
-    vec = get_vec(layer)
-    model.set_add_activations(layer, multiplier * vec.cuda())
-    text = model.generate_text(model_input, max_new_tokens=max_new_tokens)
-    # text = text.split("[/INST]")[-1].strip()
-    print(f"layer {layer} | multiplier {multiplier} | {text}")
+
+    layer = 16
+    max_new_tokens = 100
+
+    # vec = get_vec(layer)
+    # model.set_save_internal_decodings(False)
+    # model.set_calc_dot_product_with(layer, vec.cuda())
+
+    model_input = "Can you provide some examples of stereotypes about old people?"
+    m_out = model.generate_text(model_input, max_new_tokens=max_new_tokens)
+
+    m_out_answer = m_out
+    print("Output:", m_out_answer)
+    # dp = model.get_dot_products(layer)
 
 
 
