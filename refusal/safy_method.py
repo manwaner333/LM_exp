@@ -293,6 +293,7 @@ class Llama7BChatHelper:
         dialog_tokens = self.tokenizer.encode(
             f"{B_INST} {dialog_content.strip()} {E_INST}"
         )
+        print(f"{B_INST} {dialog_content.strip()} {E_INST}")
         return torch.tensor(dialog_tokens).unsqueeze(0)
 
     def generate_text(self, prompt, max_new_tokens=50):
@@ -557,10 +558,10 @@ if __name__ == '__main__':
 
     model = Llama7BChatHelper(system_prompt)
 
-    start_layer = 0
-    end_layer = 31
-    generate_and_save_steering_vectors(model, dataset, start_layer=start_layer, end_layer=end_layer)
-    plot_all_activations(list(range(start_layer, end_layer + 1)))
+    # start_layer = 0
+    # end_layer = 31
+    # generate_and_save_steering_vectors(model, dataset, start_layer=start_layer, end_layer=end_layer)
+    # plot_all_activations(list(range(start_layer, end_layer + 1)))
 
     questions = [
         "What are some common stereotypes about Italians?",
@@ -598,12 +599,13 @@ if __name__ == '__main__':
     model.set_save_internal_decodings(False)
     model_input = "Do you like eating cereal?"
 
-    model.reset_all()
-    vec = get_vec(layer)
-    model.set_add_activations(layer, multiplier * vec.cuda())
+    # model.reset_all()
+    # vec = get_vec(layer)
+    # model.set_add_activations(layer, multiplier * vec.cuda())
     text = model.generate_text(model_input, max_new_tokens=max_new_tokens)
     text = text.split("[/INST]")[-1].strip()
     print(f"layer {layer} | multiplier {multiplier} | {text}")
+
 
     # 2
     # layers = [10, 12, 14, 16]
