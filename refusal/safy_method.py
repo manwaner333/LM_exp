@@ -31,7 +31,7 @@ class ComparisonDataset(Dataset):
         self.data = data
         self.system_prompt = system_prompt
         self.tokenizer = AutoTokenizer.from_pretrained(
-            "meta-llama/Llama-2-7b"      # "meta-llama/Llama-2-7b-chat-hf"      # , use_auth_token=token
+            "meta-llama/Llama-2-7b""meta-llama/Llama-2-7b-chat-hf"      # , use_auth_token=token
         )
         self.tokenizer.pad_token = self.tokenizer.eos_token
 
@@ -263,12 +263,12 @@ class Llama7BChatHelper:
         # self.model = AutoModelForCausalLM.from_pretrained(
         #     "meta-llama/Llama-2-7b-chat-hf",  # use_auth_token=token
         # ).to(self.device)
-        config = AutoConfig.from_pretrained("meta-llama/Llama-2-7b")  #, trust_remote_code=True)
+        config = AutoConfig.from_pretrained("huggyllama/llama-7b")  #, trust_remote_code=True)
         self.tokenizer = AutoTokenizer.from_pretrained(
-            "meta-llama/Llama-2-7b"  # , trust_remote_code=True,  # use_auth_token=token
+            "huggyllama/llama-7b"  # , trust_remote_code=True,  # use_auth_token=token
         )
         self.model = AutoModelForCausalLM.from_pretrained(
-            "meta-llama/Llama-2-7b", config=config  # , trust_remote_code=True, low_cpu_mem_usage=True  # use_auth_token=token
+            "huggyllama/llama-7b", config=config  # , trust_remote_code=True, low_cpu_mem_usage=True  # use_auth_token=token
         ).to(self.device)
 
         self.END_STR = torch.tensor(self.tokenizer.encode("[/INST]")[1:]).to(
